@@ -1,4 +1,4 @@
-#include <string>       
+﻿#include <string>       
 #include <iostream>  
 #include <chrono>
 #include <thread>
@@ -9,18 +9,21 @@
 #include <ctime>
 #include <cstdlib>
 
-position_t apple(0, 0);
-std::deque<position_t> snake = { position_t(2, 2) };
+position_t get_new_apple();
+
+std::deque<position_t> snake = { position_t( board_size/2, board_size/2) };
+position_t apple = get_new_apple();
 char direction = right;
 int score = 0;
 int random_counter = 0;
+bool direction_set = false;
 
 void get_input() {
 	while (!game_is_finished) {
 		for (int i = 0; i < board_size - 1; i++) {
-			if (GetAsyncKeyState(0x25 + i) && std::abs(direction - i) != 2) {
+			if (GetAsyncKeyState(0x25 + i) && std::abs(direction - i) != 2 && !direction_set) {
 				direction = i;
-				Sleep(950);
+				direction_set = true;
 			}
 		}
 	}
@@ -54,8 +57,9 @@ position_t get_new_apple() {
 int main()
 {
 	std::thread input(get_input);
-
+	SetConsoleTitle("snake");
 	while (!game_is_finished) {
+		direction_set = false;
 		snake.push_front(position_t(snake.front().x, snake.front().y, direction));
 
 		if (snake.front() == apple) {
@@ -87,19 +91,18 @@ int main()
 					set_text_colour(console_color_t::white);
 				}
 				else 
-					std::cout << "  ";
+					std::cout << "- ";
 				if (col == board_size - 1)
 					std::cout << std::endl;
 			}
 		}
-
-		Sleep(1000);
+		Sleep(300);
 		std::system("cls");
 		random_counter++;
 	}
 
 	input.join();
 	std::system("cls");
-	std::cout << "game has finished!";
+	std::cout << "score : " << score << std::endl << "gg";
 	Sleep(5000);
 }
