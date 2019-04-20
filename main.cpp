@@ -21,7 +21,7 @@ bool direction_set = false;
 void get_input() {
 	while (!game_is_finished) {
 		for (int i = 0; i < board_size - 1; i++) {
-			if (GetAsyncKeyState(0x25 + i) && std::abs(direction - i) != 2 && !direction_set) {
+			if (GetAsyncKeyState(0x25 + i) && std::abs(direction - i) != 2 && !direction_set && direction - i != 0) {
 				direction = i;
 				direction_set = true;
 			}
@@ -29,7 +29,7 @@ void get_input() {
 	}
 }
 
-static auto is_in_deque = [](const std::deque<position_t> &snake, position_t position, bool check_first = true) -> bool {
+bool is_in_deque (const std::deque<position_t> &snake, position_t position, bool check_first = true) {
 	for (int i = check_first ? 0 : 1; i < snake.size(); i++)
 		if (position == snake[i])
 			return true;
@@ -50,7 +50,7 @@ position_t get_new_apple() {
 	auto ret = position_t(x, y);
 	if (is_in_deque(snake, ret))
 		return get_new_apple();
-
+	random_counter = 1;
 	return ret;
 }
 
@@ -92,6 +92,7 @@ int main()
 				}
 				else 
 					std::cout << "- ";
+
 				if (col == board_size - 1)
 					std::cout << std::endl;
 			}
@@ -100,7 +101,6 @@ int main()
 		std::system("cls");
 		random_counter++;
 	}
-
 	input.join();
 	std::system("cls");
 	std::cout << "score : " << score << std::endl << "gg";
