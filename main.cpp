@@ -39,8 +39,10 @@ bool is_in_deque (const std::deque<position_t> &snake, position_t position, bool
 position_t get_new_apple() {
 	random_counter++;
 
-	if (random_counter > 10000)
+	if (random_counter > 10000) {
 		game_is_finished = true;
+		return position_t(0, 0);
+	}
 
 	srand(time(0) + random_counter);
 	auto x = rand() % board_size;
